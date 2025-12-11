@@ -7,6 +7,7 @@
     <title>@yield('title') | جامعة الغردقة</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="Styles/dashboard.css">
 </head>
 
@@ -28,7 +29,7 @@
                     <i class="fa-solid fa-users"></i>
                     <span>الطلاب</span>
                 </a>
-                <a href="subjects.html" class="active" data-section="subjects">
+                <a href="subjects.html"  data-section="subjects">
                     <i class="fa-solid fa-book-open"></i>
                     <span>المواد الدراسية</span>
                 </a>
@@ -36,7 +37,7 @@
                     <i class="fa-solid fa-user-check"></i>
                     <span>المراقبون</span>
                 </a>
-                <a href="rooms.html" data-section="rooms">
+                <a href="{{ route('rooms.index') }}" @class(['active' => request()->routeIs('rooms.*')]) data-section="rooms" >
                     <i class="fa-solid fa-door-closed"></i>
                     <span>القاعات</span>
                 </a>

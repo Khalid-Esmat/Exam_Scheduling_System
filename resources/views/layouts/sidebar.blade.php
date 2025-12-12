@@ -29,7 +29,7 @@
                     <i class="fa-solid fa-users"></i>
                     <span>الطلاب</span>
                 </a>
-                <a href="subjects.html"  data-section="subjects">
+                <a href="{{ route('courses.index') }}"  @class(['active' => request()->routeIs('courses.*')]) data-section="subjects">
                     <i class="fa-solid fa-book-open"></i>
                     <span>المواد الدراسية</span>
                 </a>

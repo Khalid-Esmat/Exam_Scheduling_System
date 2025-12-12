@@ -27,8 +27,8 @@
             <table>
                 <thead>
                     <tr>
-                        <th>كود المادة</th>
                         <th>اسم المقرر</th>
+                        <th>كود المادة</th>
                         <th>القسم التابع له</th>
                         <th>الفرقة</th>
                         <th>الساعات المعتمدة</th>
@@ -36,12 +36,13 @@
                     </tr>
                 </thead>
                 <tbody>
+                  @foreach ($courses as $course )
                     <tr>
-                        <td>CS201</td>
-                        <td>هياكل البيانات</td>
-                        <td>علوم الحاسب</td>
-                        <td>الثانية</td>
-                        <td>3 ساعات</td>
+                        <td>{{$course->course_name }}</td>
+                        <td>{{$course->course_code }}</td>
+                        <td>{{ $course->departments->pluck('department_name')->implode('، ') }}</td>
+                        <td>{{$course ->level_name}}</td>
+                        <td>{{$course->credit_hours_name }} </td>
                         <td>
                             <a href="#editSubjectModal" class="small-btn edit" title="تعديل المادة"><i
                                     class="fa-solid fa-pen"></i></a>
@@ -49,20 +50,7 @@
                                     class="fa-solid fa-trash"></i></a>
                         </td>
                     </tr>
-
-                    <tr>
-                        <td>HM105</td>
-                        <td>مهارات عرض</td>
-                        <td>عام</td>
-                        <td>الأولى</td>
-                        <td>2 ساعة</td>
-                        <td>
-                            <a href="#editSubjectModal" class="small-btn edit" title="تعديل المادة"><i
-                                    class="fa-solid fa-pen"></i></a>
-                            <a href="#deleteSubjectModal" class="small-btn del" title="حذف المادة"><i
-                                    class="fa-solid fa-trash"></i></a>
-                        </td>
-                    </tr>
+                 @endforeach
                 </tbody>
             </table>
         </div>

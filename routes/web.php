@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CourseController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoomController;
 
@@ -22,3 +23,12 @@ Route::get('/rooms',[RoomController::class,'index'])->name('rooms.index');
 Route::delete('/rooms/{room}',[RoomController::class,'destroy'])->name('rooms.destroy');
 Route::post('/rooms',action: [RoomController::class,'store'])->name('rooms.store');
 Route::put('/rooms/{room}', [RoomController::class, 'update'])->name('rooms.update');
+
+
+// ===============================
+// CRUD: Courses
+// ===============================
+Route::get('/courses',[CourseController::class,'index'])->name('courses.index');
+// Route::delete('/rooms/{room}',[RoomController::class,'destroy'])->name('rooms.destroy');
+// Route::post('/rooms',action: [RoomController::class,'store'])->name('rooms.store');
+// Route::put('/rooms/{room}', [RoomController::class, 'update'])->name('rooms.update');

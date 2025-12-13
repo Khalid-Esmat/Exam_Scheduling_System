@@ -1,22 +1,40 @@
 @extends('layouts.sidebar')
 @section('title')
-    إدارة المراقبين
+    إدارة الملاحظين
 @endsection
 @section('body')
     <section class="content">
-        <h2 class="section-title">قائمة المراقبين</h2>
+        <h2 class="section-title">قائمة الملاحظين</h2>
 
-        <div class="controls">
-            <div class="filter-group">
-                <input type="text" style="width: 250px;" placeholder="بحث بالاسم أو الكود...">
-            </div>
+        <div class="controls"
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
 
-            <div style="display:flex; gap:10px;">
-                <a href="#addInvigilatorModal" class="btn add">
-                    <i class="fa-solid fa-plus"></i> إضافة مراقب
-                </a>
-            </div>
+            <!-- البحث -->
+            <form method="GET" action="{{ route('invigilators.index') }}"
+                style="display:flex; gap:10px; align-items:center;">
+
+                <input type="text" name="search" placeholder="بحث بالاسم أو الإيميل أو الهاتف أو الوظيفة."
+                    class="search-input" style="width:250px;">
+
+                <button type="submit" class="btn add">
+                    <i class="fa-solid fa-magnifying-glass"></i> بحث
+                </button>
+            </form>
+
+            <!-- إضافة ملاحظ -->
+            <a href="#addInvigilatorModal" class="btn add">
+                <i class="fa-solid fa-plus"></i> إضافة ملاحظ
+            </a>
+
         </div>
+        @if ($message)
+            <div class="alert alert-warning" style="margin-bottom:15px;">
+                <i class="fa-solid fa-circle-info"></i>
+                {{ $message }}
+            </div>
+        @endif
+
+
 
         <div class="card">
             <table id="observersTable">
@@ -27,45 +45,29 @@
                         <th>الوظيفة</th>
                         <th>رقم الهاتف</th>
                         <th>البريد الإلكتروني</th>
-                        <th>الباسورد</th>
-                        <th>عدد اللجان</th>
                         <th>الإجراءات</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>شهد رمضان</td>
-                        <td>موظف شئون</td>
-                        <td>0123456789</td>
-                        <td>shahd@hurghada.edu.eg</td>
-                        <td>
-                            <div class="table-password-wrapper">
-                                <input type="password" value="123456" readonly>
-                                <i class="fa-solid fa-eye"></i>
-                            </div>
-                        </td>
-                        <td>
-                            <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                <span
-                                    style="background: #e0f2fe; color: #0369a1; padding: 4px 10px; border-radius: 15px; font-size: 12px; font-weight: bold; border: 1px solid #bae6fd;">
-                                    2 لجنة
-                                </span>
-                                <a href="#viewDetailsModal" class="small-btn show" title="عرض التفاصيل"
-                                    style="padding: 5px 8px;">
-                                    <i class="fa-regular fa-eye"></i>
+                    @foreach ($invigilators as $inv)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $inv->user->name }}</td>
+                            <td>{{ $inv->job }}</td>
+                            <td>{{ $inv->phone }}</td>
+                            <td>{{ $inv->user->email }}</td>
+                            <td>
+                                <a href="#editInvigilatorModal-{{ $inv->id }}" class="small-btn edit"
+                                    title="تعديل البيانات">
+                                    <i class="fa-solid fa-pen"></i>
                                 </a>
-                            </div>
-                        </td>
-                        <td>
-                            <a href="#editInvigilatorModal" class="small-btn edit" title="تعديل البيانات">
-                                <i class="fa-solid fa-pen"></i>
-                            </a>
-                            <a href="#deleteInvigilatorModal" class="small-btn del" title="حذف المراقب">
-                                <i class="fa-solid fa-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
+                                <a href="#deleteInvigilatorModal-{{ $inv->id }}" class="small-btn del"
+                                    title="حذف الملاحظ">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
@@ -75,9 +77,9 @@
 @section('modals')
     <div id="addInvigilatorModal" class="modal-overlay">
         <div class="modal">
-            <h3>إضافة مراقب جديد</h3>
-            <form action="/invigilators/save" method="POST" class="styled-form">
-
+            <h3>إضافة ملاحظ جديد</h3>
+            <form action="{{ route('invigilators.store') }}" method="POST" class="styled-form">
+                @csrf
                 <h4 class="form-section-title"><i class="fa-solid fa-user-gear"></i> البيانات والحساب</h4>
 
                 <div class="form-row">
@@ -85,16 +87,25 @@
                         <label>الاسم الرباعي <span class="required">*</span></label>
                         <div class="input-icon-wrapper">
                             <i class="fa-solid fa-user"></i>
-                            <input type="text" name="full_name" required placeholder="أدخل الاسم بالكامل">
+                            <input type="text" name="name" placeholder="أدخل الاسم بالكامل"
+                                value="{{ session('open_modal') === 'addInvigilatorModal' ? old('name') : '' }}">
+
                         </div>
+                        @error('name', 'addInvigilator')
+                            <span style="color:red;">{{ $message }}</span>
+                        @enderror
                     </div>
 
                     <div class="col" style="flex: 1;">
                         <label>الوظيفة</label>
                         <div class="input-icon-wrapper">
                             <i class="fa-solid fa-briefcase"></i>
-                            <input type="text" name="job_title" placeholder="مثال: معيد">
+                            <input type="text" name="job" placeholder="مثال: معيد"
+                                value="{{ session('open_modal') === 'addInvigilatorModal' ? old('job') : '' }}">
                         </div>
+                        @error('job', 'addInvigilator')
+                            <span style="color:red;">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
@@ -102,17 +113,25 @@
                     <div class="col">
                         <label>كلمة المرور</label>
                         <div class="input-icon-wrapper">
-                            <input type="password" name="password" id="modal_password" placeholder="******">
+                            <input type="password" name="password" id="modal_password" placeholder="******"
+                                value="{{ session('open_modal') === 'addInvigilatorModal' ? old('password') : '' }}">
                             <i class="fa-solid fa-eye toggle-pass-btn" onclick="togglePassword('modal_password', this)"></i>
                         </div>
+                        @error('password', 'addInvigilator')
+                            <span style="color:red;">{{ $message }}</span>
+                        @enderror
                     </div>
 
                     <div class="col">
                         <label>رقم الهاتف</label>
                         <div class="input-icon-wrapper">
                             <i class="fa-solid fa-phone-flip"></i>
-                            <input type="tel" name="phone" placeholder="010xxxxxxx">
+                            <input type="tel" name="phone" placeholder="010xxxxxxx"
+                                value="{{ session('open_modal') === 'addInvigilatorModal' ? old('phone') : '' }}"">
                         </div>
+                        @error('phone', 'addInvigilator')
+                            <span style="color:red;">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
@@ -121,157 +140,158 @@
                         <label>البريد الإلكتروني</label>
                         <div class="input-icon-wrapper">
                             <i class="fa-solid fa-envelope"></i>
-                            <input type="email" name="email" placeholder="example@hurghada.edu.eg">
+                            <input type="email" name="email" placeholder="example@hurghada.edu.eg"
+                                value="{{ session('open_modal') === 'addInvigilatorModal' ? old('email') : '' }}">
                         </div>
+                        @error('email', 'addInvigilator')
+                            <span style="color:red;">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
                 <div class="modal-actions">
-                    <a href="#" class="btn-secondary">إلغاء</a>
+                    <a href="{{ route('invigilators.index') }}" class="btn-secondary">إلغاء</a>
                     <button type="submit" class="btn add">حفظ البيانات</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <div id="editInvigilatorModal" class="modal-overlay">
-        <div class="modal">
-            <h3>
-                <i class="fa-solid fa-user-pen" style="color:var(--warning); margin-left:10px;"></i>
-                تعديل بيانات المراقب
-            </h3>
-            <form action="/invigilators/update" method="POST" class="styled-form">
+    @foreach ($invigilators as $inv)
+        {{-- edit modal --}}
+        <div id="editInvigilatorModal-{{ $inv->id }}" class="modal-overlay">
+            <div class="modal">
+                <h3>
+                    <i class="fa-solid fa-user-pen" style="color:var(--warning); margin-left:10px;"></i>
+                    تعديل بيانات الم
+                </h3>
+                <form action="{{ route('invigilators.update', $inv->id) }}" method="POST" class="styled-form">
+                    @csrf
+                    @method('PUT')
+                    <h4 class="form-section-title"><i class="fa-solid fa-user-gear"></i> البيانات والحساب</h4>
 
-                <input type="hidden" name="invigilator_id" value="1">
+                    <div class="form-row">
+                        <div class="col" style="flex: 1.5;">
+                            <label>الاسم الرباعي <span class="required">*</span></label>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-user"></i>
+                                <input type="text" name="name" value="{{ $inv->user->name }}" required>
+                            </div>
+                        </div>
 
-                <h4 class="form-section-title"><i class="fa-solid fa-user-gear"></i> البيانات والحساب</h4>
-
-                <div class="form-row">
-                    <div class="col" style="flex: 1.5;">
-                        <label>الاسم الرباعي <span class="required">*</span></label>
-                        <div class="input-icon-wrapper">
-                            <i class="fa-solid fa-user"></i>
-                            <input type="text" name="full_name" value="شهد رمضان" required>
+                        <div class="col" style="flex: 1;">
+                            <label>الوظيفة</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-briefcase"></i>
+                                <input type="text" name="job" value="{{ $inv->job }}">
+                            </div>
                         </div>
                     </div>
 
-                    <div class="col" style="flex: 1;">
-                        <label>الوظيفة</label>
-                        <div class="input-icon-wrapper">
-                            <i class="fa-solid fa-briefcase"></i>
-                            <input type="text" name="job_title" value="موظف شئون">
+                    <div class="form-row">
+                        <div class="col">
+                            <label>كلمة المرور (اتركها فارغة لعدم التغيير)</label>
+                            <div class="input-icon-wrapper">
+                                <input type="password" name="password" id="modal_edit_password_{{ $inv->id }}"
+                                    placeholder="***********">
+                                <i class="fa-solid fa-eye toggle-pass-btn"
+                                    onclick="togglePassword('modal_edit_password_{{ $inv->id }}', this)"></i>
+                            </div>
+                            @error('password', 'editInvigilator')
+                                <span style="color:red;">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="col">
+                            <label>رقم الهاتف</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-phone-flip"></i>
+                                <input type="tel" name="phone" value="{{ $inv->phone }}">
+                            </div>
+                            @error('phone', 'editInvigilator')
+                                <span style="color:red;">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
-                </div>
 
-                <div class="form-row">
-                    <div class="col">
-                        <label>كلمة المرور (اتركها فارغة لعدم التغيير)</label>
-                        <div class="input-icon-wrapper">
-                            <input type="password" name="password" id="modal_edit_password" placeholder="******">
-                            <i class="fa-solid fa-eye toggle-pass-btn"
-                                onclick="togglePassword('modal_edit_password', this)"></i>
+                    <div class="form-row">
+                        <div class="col">
+                            <label>البريد الإلكتروني</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-envelope"></i>
+                                <input type="email" name="email" value="{{ $inv->user->email }}">
+                                @error('email', 'editInvigilator')
+                                    <span style="color:red;">{{ $message }}</span>
+                                @enderror
+                            </div>
                         </div>
                     </div>
 
-                    <div class="col">
-                        <label>رقم الهاتف</label>
-                        <div class="input-icon-wrapper">
-                            <i class="fa-solid fa-phone-flip"></i>
-                            <input type="tel" name="phone" value="0123456789">
-                        </div>
+                    <div class="modal-actions">
+                        <a href="{{ route('invigilators.index') }}" class="btn-secondary">إلغاء</a>
+                        <button type="submit" class="btn add" style="background-color: var(--warning); color: #000;">
+                            حفظ التعديلات
+                        </button>
                     </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="col">
-                        <label>البريد الإلكتروني</label>
-                        <div class="input-icon-wrapper">
-                            <i class="fa-solid fa-envelope"></i>
-                            <input type="email" name="email" value="shahd@hurghada.edu.eg">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-actions">
-                    <a href="#" class="btn-secondary">إلغاء</a>
-                    <button type="submit" class="btn add" style="background-color: var(--warning); color: #000;">
-                        حفظ التعديلات
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="deleteInvigilatorModal" class="modal-overlay">
-        <div class="modal" style="width: 400px; text-align: center;">
-
-            <div style="margin-bottom: 20px;">
-                <i class="fa-solid fa-triangle-exclamation" style="font-size: 50px; color: var(--danger);"></i>
-            </div>
-
-            <h3 style="justify-content: center; border: none; margin-bottom: 10px;">هل أنت متأكد؟</h3>
-
-            <p style="color: var(--muted); margin-bottom: 25px;">
-                أنت على وشك حذف المراقب: <br>
-                <span style="color: #000; font-weight: bold;">شهد رمضان</span>
-                <br>
-                <span style="font-size: 13px; color: var(--danger);">سيتم حذف جدول المراقبة الخاص به أيضاً.</span>
-            </p>
-
-            <form action="/invigilators/delete" method="POST">
-                <input type="hidden" name="invigilator_id" value="1">
-
-                <div class="modal-actions" style="justify-content: center;">
-                    <a href="#" class="btn-secondary">تراجع</a>
-                    <button type="submit" class="btn" style="background-color: var(--danger); color: white;">
-                        نعم، احذف
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="viewDetailsModal" class="modal-overlay">
-        <div class="modal" style="width: 600px;">
-            <h3 style="border-bottom:none; margin-bottom:10px;">
-                المهام المسندة للمراقب:
-                <span style="color:var(--accent)">شهد رمضان</span>
-            </h3>
-
-            <h4 style="font-size:14px; color:#1e3a8a; margin-bottom:10px;">جدول المراقبة واللجان:</h4>
-
-            <div style="border:1px solid #e2e8f0; border-radius:8px; overflow:hidden;">
-                <table style="margin:0;">
-                    <thead style="background:#f1f5f9;">
-                        <tr>
-                            <th style="padding:10px; font-size:13px;">القاعة</th>
-                            <th style="padding:10px; font-size:13px;">اليوم</th>
-                            <th style="padding:10px; font-size:13px;">الوقت (من - إلى)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="modal_schedule_body">
-                        <tr>
-                            <td>مدرج (أ)</td>
-                            <td>السبت 20/5</td>
-                            <td>09:00 ص - 12:00 م</td>
-                        </tr>
-                        <tr>
-                            <td>معمل الحاسب (3)</td>
-                            <td>الأحد 21/5</td>
-                            <td>01:00 م - 03:00 م</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="modal-actions">
-                <a href="#" class="btn-close-modal">
-                    <i class="fa-solid fa-xmark"></i> إغلاق النافذة
-                </a>
+                </form>
             </div>
         </div>
-    </div>
+
+
+        {{-- delete modal --}}
+        <div id="deleteInvigilatorModal-{{ $inv->id }}" class="modal-overlay">
+            <div class="modal" style="width: 400px; text-align: center;">
+
+                <div style="margin-bottom: 20px;">
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 50px; color: var(--danger);"></i>
+                </div>
+
+                <h3 style="justify-content: center; border: none; margin-bottom: 10px;">هل أنت متأكد؟</h3>
+
+                <p style="color: var(--muted); margin-bottom: 25px;">
+                    أنت على وشك حذف الملاحظ: <br>
+                    <span style="color: #000; font-weight: bold;">{{ $inv->user->name }}</span>
+                    <br>
+                    <span style="font-size: 13px; color: var(--danger);">سيتم حذف جدول الملاحظة الخاص به أيضاً.</span>
+                </p>
+
+                <form action="{{ route('invigilators.destroy', $inv->id) }}" method="POST">
+                    @csrf
+                    @method('DELETE') <div class="modal-actions" style="justify-content: center;">
+                        <a href="#" class="btn-secondary">تراجع</a>
+                        <button type="submit" class="btn" style="background-color: var(--danger); color: white;">
+                            نعم، احذف
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endforeach
+
+
+
+    {{-- فتح modals لو فى اخطاء --}}
+    @if (session('open_modal'))
+        <script>
+            window.addEventListener('load', function() {
+                window.location.hash = '#{{ session('open_modal') }}';
+            });
+        </script>
+    @endif
+
+
+
+    {{-- رسالة اضافة وتعديل ملاحظين --}}
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: @json(session('success')),
+                showConfirmButton: false,
+                timer: 2000
+            })
+        </script>
+    @endif
 
     <script>
         // دالة إظهار/إخفاء كلمة المرور

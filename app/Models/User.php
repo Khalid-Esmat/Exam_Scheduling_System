@@ -21,8 +21,14 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
+    public function invigilator()
+    {
+        return $this->hasOne(Invigilator::class);
+    }
+    
     /**
      * The attributes that should be hidden for serialization.
      *

@@ -33,9 +33,9 @@
                     <i class="fa-solid fa-book-open"></i>
                     <span>المواد الدراسية</span>
                 </a>
-                <a href="invigilators.html" data-section="observers">
+                <a href="{{ route('invigilators.index') }}" @class(['active' => request()->routeIs('invigilators.*')]) data-section="observers">
                     <i class="fa-solid fa-user-check"></i>
-                    <span>المراقبون</span>
+                    <span>الملاحظون</span>
                 </a>
                 <a href="{{ route('rooms.index') }}" @class(['active' => request()->routeIs('rooms.*')]) data-section="rooms" >
                     <i class="fa-solid fa-door-closed"></i>

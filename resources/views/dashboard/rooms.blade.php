@@ -8,13 +8,23 @@
 
         <div class="controls">
             <div class="filter-group">
-                <input type="text" style="width: 250px;" placeholder="بحث باسم القاعة...">
+            <form method="GET" action="{{ route('rooms.index') }}" style="display:flex; gap:10px; align-items:center;">
+                <input type="text"          name="search" style="width: 250px;" placeholder="بحث باسم القاعة..." value="{{ request('search') }}">
+                <button type="submit" class="btn add">
+                    <i class="fa-solid fa-magnifying-glass"></i> بحث
+                </button>
+            </form>
             </div>
-
             <a href="#addRoomModal" class="btn add">
                 <i class="fa-solid fa-plus"></i> إضافة قاعة
             </a>
         </div>
+        @if ($message)
+            <div id="autoAlert" class="alert alert-warning" style="margin-bottom:15px;">
+                <i class="fa-solid fa-circle-info"></i>
+                {{ $message }}
+            </div>
+        @endif 
 
         <div class="card">
             <table>
@@ -44,11 +54,7 @@
                             </td>
                             <td>
                                 <span style="color: var(--success); font-weight: bold; font-size: 13px;">
-                                    @if ($room->is_available)
-                                        <i class="fa-solid fa-circle-check"></i> متاحة للاستخدام
-                                    @else
-                                        يعقد فيها امتحان
-                                    @endif
+                                    <i class="fa-solid fa-circle-check"></i> {{$room -> status_name}}
                                 </span>
                             </td>
                             <td>
@@ -114,11 +120,11 @@
 
                 <div class="form-row">
                     <div class="col">
-                        <label>حالة القاعة</label>
-                        <select name="status">
-                            <option value="1">متاحة للاستخدام</option>
-                            <option value="0">يعقد فيها امتحان</option>
-                        </select>
+                            <select name="status" style="padding-right: 40px;">
+                                <option value="1" selected>متاحة للاستخدام</option>
+                                <option value="2">تحت الصيانة</option>
+                                <option value="3">مغلقة</option>
+                            </select>
                     </div>
                 </div>
 
@@ -187,10 +193,11 @@
                             <div class="input-icon-wrapper">
                                 <i class="fa-solid fa-circle-check"></i>
 
-                                <select name="status" style="padding-right: 40px;">
-                                    <option value="1" selected>متاحة للاستخدام</option>
-                                    <option value="0">يعقد فيهاامتحان</option>
-                                </select>
+                            <select name="status" style="padding-right: 40px;">
+                                <option value="1" selected>متاحة للاستخدام</option>
+                                <option value="2">تحت الصيانة</option>
+                                <option value="3">مغلقة</option>
+                            </select>
 
                             </div>
                         </div>
@@ -250,4 +257,21 @@
             })
         </script>
     @endif
+    <!-- إخفاء رسالة التنبيه تلقائيًا بعد عدة ثوانٍ -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const alertBox = document.getElementById('autoAlert');
+
+            if (alertBox) {
+                setTimeout(() => {
+                    alertBox.style.transition = 'opacity 0.5s ease';
+                    alertBox.style.opacity = '0';
+
+                    setTimeout(() => {
+                        alertBox.remove();
+                    }, 500);
+                }, 2000); // 3 ثواني
+            }
+        });
+    </script>
 @endsection

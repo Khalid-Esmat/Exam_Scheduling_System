@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('room_name')->unique();
             $table->unsignedSmallInteger('capacity');
+            // 1=available, 2=maintenance, 3=closed
+            $table->unsignedTinyInteger('status')->default(1);
             $table->string('location');
             $table->boolean('is_available')->default(true);
             $table->timestamps();

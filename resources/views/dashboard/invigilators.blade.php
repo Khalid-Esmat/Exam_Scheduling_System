@@ -10,10 +10,9 @@
             style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
 
             <!-- البحث -->
-            <form method="GET" action="{{ route('invigilators.index') }}"
-                style="display:flex; gap:10px; align-items:center;">
+            <form method="GET" action="{{ route('invigilators.index') }}" style="display:flex; gap:10px; align-items:center;">
 
-                <input type="text" name="search" placeholder="بحث بالاسم أو الإيميل أو الهاتف أو الوظيفة."
+                <input type="text" name="search" placeholder="بحث بالاسم أو الإيميل أو الهاتف أو الوظيفة." value="{{ request('search') }}"
                     class="search-input" style="width:250px;">
 
                 <button type="submit" class="btn add">
@@ -28,12 +27,11 @@
 
         </div>
         @if ($message)
-            <div class="alert alert-warning" style="margin-bottom:15px;">
+            <div id="autoAlert" class="alert alert-warning" style="margin-bottom:15px;">
                 <i class="fa-solid fa-circle-info"></i>
                 {{ $message }}
             </div>
         @endif
-
 
 
         <div class="card">
@@ -127,7 +125,7 @@
                         <div class="input-icon-wrapper">
                             <i class="fa-solid fa-phone-flip"></i>
                             <input type="tel" name="phone" placeholder="010xxxxxxx"
-                                value="{{ session('open_modal') === 'addInvigilatorModal' ? old('phone') : '' }}"">
+                                value="{{ session('open_modal') === 'addInvigilatorModal' ? old('phone') : '' }}">
                         </div>
                         @error('phone', 'addInvigilator')
                             <span style="color:red;">{{ $message }}</span>
@@ -258,7 +256,7 @@
                 <form action="{{ route('invigilators.destroy', $inv->id) }}" method="POST">
                     @csrf
                     @method('DELETE') <div class="modal-actions" style="justify-content: center;">
-                        <a href="#" class="btn-secondary">تراجع</a>
+                        <a href="{{ route('invigilators.index') }}" class="btn-secondary">تراجع</a>
                         <button type="submit" class="btn" style="background-color: var(--danger); color: white;">
                             نعم، احذف
                         </button>
@@ -326,6 +324,23 @@
                     }
                 });
             });
+        });
+    </script>
+    <!-- إخفاء رسالة التنبيه تلقائيًا بعد عدة ثوانٍ -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const alertBox = document.getElementById('autoAlert');
+
+            if (alertBox) {
+                setTimeout(() => {
+                    alertBox.style.transition = 'opacity 0.5s ease';
+                    alertBox.style.opacity = '0';
+
+                    setTimeout(() => {
+                        alertBox.remove();
+                    }, 500);
+                }, 2000); // 3 ثواني
+            }
         });
     </script>
 @endsection

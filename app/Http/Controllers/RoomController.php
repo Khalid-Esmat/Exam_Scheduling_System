@@ -9,19 +9,33 @@ use Illuminate\Support\Facades\Validator;
 class RoomController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $rooms = Room::all();
-        return view('dashboard.rooms', compact('rooms'));
+        $search = $request->search;
+        $message = null;
+
+        $query = Room::query();
+
+        if ($search) {
+            $query->where('room_name', 'like', "%{$search}%");
+        }
+
+        $rooms = $query->get();
+
+        if ($search && $rooms->isEmpty()) {
+            $message = 'لا توجد قاعات مطابقة لبحثك';
+            $rooms = Room::all();
+
+        }
+
+        return view('dashboard.rooms', compact('rooms', 'message', 'search'));
     }
-
-
     public function destroy($id)
     {
         $room = Room::findOrFail($id);
         $room->delete();
 
-        return redirect()->route('rooms.index');
+        return redirect()->route('rooms.index')->with('success', 'تم حذف القاعة بنجاح');
     }
 
 
@@ -31,7 +45,7 @@ class RoomController extends Controller
             'room_name' => 'required|string|max:255|unique:rooms,room_name' . ($id ? ',' . $id : ''),
             'capacity' => 'required|integer|min:1',
             'location' => 'required|string',
-            'status' => 'required|in:0,1',
+            'status' => 'required|in:1,2,3',
         ];
     }
 
@@ -66,7 +80,7 @@ class RoomController extends Controller
             'room_name' => $request->room_name,
             'capacity' => $request->capacity,
             'location' => $request->location,
-            'is_available' => $request->status,
+            'status' => $request->status,
         ]);
 
         return redirect()->route('rooms.index')->with('success', 'تم إضافة القاعة بنجاح');
@@ -93,7 +107,7 @@ class RoomController extends Controller
             'room_name' => $request->room_name,
             'capacity' => $request->capacity,
             'location' => $request->location,
-            'is_available' => $request->status,
+            'status' => $request->status,
         ]);
 
         return redirect()->route('rooms.index')->with('success', 'تم تعديل بيانات القاعة بنجاح');

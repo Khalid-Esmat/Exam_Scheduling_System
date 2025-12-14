@@ -13,10 +13,12 @@ return new class extends Migration
             $table->id();
             /**
              * department_type:
-             * 0 = عام
-             * 1 = CS (علوم الحاسب)
-             * 2 = IS (نظم المعلومات)
-             */
+             * 1 = عام
+             * 2 = CS (علوم الحاسب)
+             * 3 = IS (نظم المعلومات)
+             * 4 = AI (ذكاء اصطناعى)
+             * 5 = IT (تكنولوجيا معلومات)
+             * */
             $table->unsignedTinyInteger('department_code');
             $table->timestamps();
         });

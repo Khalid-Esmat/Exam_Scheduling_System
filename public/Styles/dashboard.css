@@ -737,6 +737,53 @@ select:focus {
     color: var(--accent);
 }
 
+/* {{-- Checkbox الخاصة بالأقسام داخل مودال إضافة مقرر في صفحة الكورسات --}} */
+.department-checkboxes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+}
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background: linear-gradient(180deg, #ffffff, #f9fafb);
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+/* Hover */
+.checkbox-item:hover {
+    border-color: #6366f1;
+    background: #f5f3ff;
+    transform: translateY(-1px);
+}
+
+/* Checkbox نفسه */
+.checkbox-item input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #1f869b;
+    cursor: pointer;
+}
+
+/* النص */
+.checkbox-item span {
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+}
+
+/* عند الاختيار */
+.checkbox-item input[type="checkbox"]:checked + span {
+    color: #1f869b;
+    font-weight: 600;
+}
+
+
 /* =========================================
    10. التجاوب (Responsive)
    ========================================= */

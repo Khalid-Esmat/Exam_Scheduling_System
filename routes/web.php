@@ -32,9 +32,9 @@ Route::put('/rooms/{room}', [RoomController::class, 'update'])->name('rooms.upda
 // CRUD: Courses
 // ===============================
 Route::get('/courses',[CourseController::class,'index'])->name('courses.index');
-// Route::delete('/rooms/{room}',[RoomController::class,'destroy'])->name('rooms.destroy');
-// Route::post('/rooms',action: [RoomController::class,'store'])->name('rooms.store');
-// Route::put('/rooms/{room}', [RoomController::class, 'update'])->name('rooms.update');
+Route::delete('/courses/{course}',[CourseController::class,'destroy'])->name('courses.destroy');
+Route::post('/courses',action: [CourseController::class,'store'])->name('courses.store');
+Route::put('/courses/{course}', [CourseController::class, 'update'])->name('courses.update');
 
 
 // ===============================

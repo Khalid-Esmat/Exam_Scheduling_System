@@ -10,27 +10,27 @@ class DepartmentSeeder extends Seeder{
     {
         DB::table('departments')->insert([
             [
-                'department_code' => 0, // عام
+                'department_code' => 1, // عام
                 'created_at'      => now(),
                 'updated_at'      => now(),
             ],
             [
-                'department_code' => 1, // CS
+                'department_code' => 2, // CS
                 'created_at'      => now(),
                 'updated_at'      => now(),
             ],
             [
-                'department_code' => 2, // IS
-                'created_at'      => now(),
-                'updated_at'      => now(),
-            ],
-            [
-                'department_code' => 3, // IT
+                'department_code' => 3, // IS
                 'created_at'      => now(),
                 'updated_at'      => now(),
             ],
             [
                 'department_code' => 4, // AI
+                'created_at'      => now(),
+                'updated_at'      => now(),
+            ],
+            [
+                'department_code' => 5, // IT
                 'created_at'      => now(),
                 'updated_at'      => now(),
             ],

@@ -1,7 +1,7 @@
 <?php
 
-namespace App\Http\Controllers;
-
+namespace App\Http\Controllers\Admin;
+use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Department;
 use Illuminate\Http\Request;
@@ -42,7 +42,7 @@ class CourseController extends Controller
             $message = 'لا توجد مواد مطابقة لبحثك';
         }
 
-        return view('dashboard.courses', compact('courses', 'message'));
+        return view('AdminPanel.courses', compact('courses', 'message'));
     }
 
 

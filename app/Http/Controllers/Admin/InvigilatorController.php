@@ -1,7 +1,7 @@
 <?php
 
-namespace App\Http\Controllers;
-
+namespace App\Http\Controllers\Admin;
+use App\Http\Controllers\Controller;
 use App\Models\Invigilator;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -44,7 +44,7 @@ class InvigilatorController extends Controller{
             $invigilators = $query->get();
         }
 
-        return view('dashboard.invigilators', compact('invigilators', 'message'));
+        return view('AdminPanel.invigilators', compact('invigilators', 'message'));
     }
 
     /* =======================

@@ -204,6 +204,7 @@ h2.section-title {
     font-size: 18px;
 }
 
+
 /* =========================================
    3. عناصر التحكم (Controls & Buttons)
    ========================================= */
@@ -737,53 +738,6 @@ select:focus {
     color: var(--accent);
 }
 
-/* {{-- Checkbox الخاصة بالأقسام داخل مودال إضافة مقرر في صفحة الكورسات --}} */
-.department-checkboxes {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 12px;
-}
-.checkbox-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 14px;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    background: linear-gradient(180deg, #ffffff, #f9fafb);
-    cursor: pointer;
-    transition: all 0.25s ease;
-}
-
-/* Hover */
-.checkbox-item:hover {
-    border-color: #6366f1;
-    background: #f5f3ff;
-    transform: translateY(-1px);
-}
-
-/* Checkbox نفسه */
-.checkbox-item input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    accent-color: #1f869b;
-    cursor: pointer;
-}
-
-/* النص */
-.checkbox-item span {
-    font-size: 14px;
-    font-weight: 500;
-    color: #374151;
-}
-
-/* عند الاختيار */
-.checkbox-item input[type="checkbox"]:checked + span {
-    color: #1f869b;
-    font-weight: 600;
-}
-
-
 /* =========================================
    10. التجاوب (Responsive)
    ========================================= */
@@ -835,5 +789,177 @@ select:focus {
         border-radius: 0;
         height: 100vh;
         max-height: none;
+    }
+}
+
+/* =========================================
+   Print Styles للطباعة
+   ========================================= */
+
+#print-header {
+    display: none;
+}
+
+@media print {
+
+    body,
+    .main,
+    .content {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        position: static !important;
+    }
+
+    body.violation-page {
+        zoom: 90%;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    /* إخفاء القوائم والعناصر غير الضرورية */
+    .sidebar,
+    .topbar,
+    .controls,
+    .logout,
+    .nav,
+    .modal-actions,
+    .btn,
+    #evidence_file {
+        display: none !important;
+    }
+
+    /*تنسيق الطباعة */
+    #print-header {
+        display: block !important;
+        width: 100% !important;
+        text-align: center;
+        border-bottom: 2px solid #000;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+        clear: both;
+    }
+
+    #print-header h2 {
+        font-size: 22px;
+        margin: 0;
+    }
+
+    #print-header h3 {
+        font-size: 16px;
+        margin: 5px 0;
+    }
+
+    #print-header p {
+        font-size: 14px;
+        margin: 0;
+    }
+
+    /* إعدادات الورقة */
+    @page {
+        size: A4;
+        margin: 10mm;
+    }
+
+    /* تنسيق الجدول والنصوص */
+    table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        direction: rtl !important;
+    }
+
+    th,
+    td {
+        border: 1px solid #000 !important;
+        color: #000 !important;
+        padding: 8px !important;
+        font-size: 12pt !important;
+        text-align: center !important;
+    }
+
+    /*تحويل المدخلات لنص عادي */
+    input,
+    select,
+    textarea {
+        border: none !important;
+        background: transparent !important;
+        resize: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        font-weight: bold;
+        color: #000 !important;
+        width: auto !important;
+        -webkit-appearance: none;
+        appearance: none;
+    }
+
+    select {
+        background-image: none !important;
+    }
+
+    /* إظهار صورة الدليل (صفحة الابلاغ عن مخالفة)*/
+    #evidence_preview_container {
+        /* display: block !important; */
+        text-align: center !important;
+        border: 1px solid #000 !important;
+        margin-top: 10px !important;
+        padding-bottom: 10px !important;
+    }
+
+    #evidence_image_preview {
+        max-height: 300px !important;
+        max-width: 100% !important;
+    }
+
+    /* تقليل المسافة تحت العنوان الرئيسي (صفحة الابلاغ عن مخالفة) */
+    .section-title {
+        margin-bottom: 5px !important;
+        margin-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    /* رفع الكارد لفوق (صفحة الابلاغ عن مخالفة)*/
+    .card {
+        width: 100% !important;
+        box-shadow: none !important;
+        border: none !important;
+        margin: 0 !important;
+        padding-top: 5px !important;
+        display: block !important;
+    }
+
+    /* لللإخفاء من صفحة الطباعة*/
+    .no-print {
+        display: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        height: 0 !important;
+    }
+
+    /* تقليل المسافة فوق أول عنوان فرعي داخل الفورم */
+    .form-section-title:first-child {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    /* التوقيعات*/
+    .violation-card::after {
+        content: "توقيع المراقب: ............................                                                                       توقيع رئيس اللجنة: ............................";
+        display: block;
+        margin-top: 50px;
+        padding-top: 20px;
+        border-top: 1px solid #000;
+        font-weight: bold;
+        text-align: center;
+        white-space: pre-wrap;
+    }
+
+    /* الاستخدام في وصف الواقفة في صفحة الابلاغ عن مخالفة*/
+    textarea {
+        width: 100% !important;
+        white-space: pre-wrap !important;
+        overflow: visible !important;
+        display: block !important;
     }
 }

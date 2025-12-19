@@ -1,4 +1,4 @@
-@extends('layouts.sidebar')
+@extends('AdminPanel.layouts.sidebar')
 @section('title')
     إدارة المواد
 @endsection

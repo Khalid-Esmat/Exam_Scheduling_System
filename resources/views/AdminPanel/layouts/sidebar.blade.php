@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="Styles/dashboard.css">
+    <link rel="stylesheet" href="Styles/index.css">
 </head>
 
 <body>
@@ -52,14 +52,21 @@
             </nav>
         </div>
 
-        <div class="logout">
-            <a href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i> تسجيل الخروج</a>
+       <div class="logout">
+            <form action="{{route('logout')}}" method="POST">
+                @csrf
+                <button type="submit">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    تسجيل الخروج
+                </button>
+            </form>
         </div>
+
     </aside>
 
     <main class="main">
         <div class="topbar">
-            <h1>أهلاً، مسؤول النظام</h1>
+            <h1>أهلاً،  {{auth()->user()->name}}</h1>
             <div class="user">
                 <i class="fa-regular fa-user-circle"></i> Admin
             </div>

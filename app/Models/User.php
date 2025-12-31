@@ -28,7 +28,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(Invigilator::class);
     }
-    
+    public function student()
+    {
+    return $this->hasOne(Student::class); // Links to the Student profile
+    }
     /**
      * The attributes that should be hidden for serialization.
      *

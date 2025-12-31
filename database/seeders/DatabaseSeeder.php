@@ -25,6 +25,9 @@ class DatabaseSeeder extends Seeder
             DepartmentSeeder::class,
             CourseDepartmentSeeder::class,
             AdminUserSeeder::class,
+            DepartmentLevelSeeder::class,
+            StudentSeeder::class,
+            StudentCourseSeeder::class,
         ]);
     }
 }

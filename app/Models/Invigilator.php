@@ -16,5 +16,9 @@ class Invigilator extends Model{
     {
         return $this->belongsTo(User::class);
     }  
-
+    
+    public function assignments()
+    {
+        return $this->hasMany(InvigilationAssignment::class);
+    }
 }

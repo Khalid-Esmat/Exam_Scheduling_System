@@ -43,6 +43,17 @@ class Course extends Model{
     {
         return $this->belongsToMany(Department::class, 'course_department');
     }
+    
+    public function students()
+    {
+         return $this->belongsToMany(Student::class, 'student_course')
+                     ->using(StudentCourse::class)
+                     ->withTimestamps(); //
+    }
 
+    public function examSchedules()
+    {
+        return $this->hasMany(ExamSchedule::class);
+    }
     
 }

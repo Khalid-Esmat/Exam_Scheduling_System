@@ -11,7 +11,11 @@ use App\Http\Controllers\Student\ProfileController;
 use App\Http\Controllers\Invigilator\ExamController as InvigilatorExamController;
 use App\Http\Controllers\Invigilator\ProfileController as InvigilatorProfileController;
 use App\Http\Controllers\Invigilator\ViolationController;
-
+use App\Http\Controllers\ExamSlotController;
+use App\Http\Controllers\RoomAllocationController;
+use App\Http\Controllers\ExamScheduleController;
+use App\Http\Controllers\InvigilationController;
+use App\Http\Controllers\StudentController;
 /*
 |--------------------------------------------------------------------------
 | Auth Routes
@@ -98,4 +102,106 @@ Route::middleware(['auth', 'invigilator'])->group(function () {
 
         // Route::post('/violations', [ViolationController::class, 'store'])
         //     ->name('violations.store');
+});
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Step 1: Exam Slots (Time & Dates)
+|--------------------------------------------------------------------------
+| matches: route('exams.create'), route('exams.store'), etc.
+*/
+Route::controller(ExamSlotController::class)->prefix('examSlots')->name('examSlots.')->group(function () {
+    Route::get('/create', 'create')->name('create');
+    Route::post('/', 'store')->name('store');
+    Route::put('/{examSlot}', 'update')->name('update'); // Matches the edit form
+    Route::delete('/{examSlot}', 'destroy')->name('destroy');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Step 2: Room Allocation (Distribution)
+|--------------------------------------------------------------------------
+| matches: route('allocation.store'), route('rooms.quickUpdate'), etc.
+*/
+Route::controller(RoomAllocationController::class)->prefix('roomsAllocation')->name('roomsAllocation.')->group(function () {
+    // 1. Show the allocation page (The "Next Step" link)
+    Route::get('/{slot}', 'show')->name('assign'); 
+    
+    // 2. Save allocations
+    Route::post('/{slot}', 'store')->name('store');
+    
+    // 3. Delete a specific allocation
+    Route::get('/delete/{id}', 'destroy')->name('destroy');
+});
+
+/*
+|--------------------------------------------------------------------------
+| AJAX Routes (API-like calls)
+|--------------------------------------------------------------------------
+| These are called by JavaScript fetch()
+*/
+Route::post('/rooms/{room}/quick-update', [RoomAllocationController::class, 'updateRoomCapacity'])
+    ->name('rooms.quickUpdate');
+
+
+
+Route::prefix('schedules')->group(function () {
+    // 1. الصفحة الرئيسية للجدولة الشاملة
+    Route::get('/all', [ExamScheduleController::class, 'indexAll'])->name('schedule.all');
+
+    // 2. الجدولة اليدوية (التي سببت الخطأ)
+    Route::get('/manual/{slot}', [ExamScheduleController::class, 'manualMode'])->name('schedule.manual');
+
+    // 3. الجدولة التلقائية للكل
+    Route::get('/generate-auto-all', [ExamScheduleController::class, 'autoGenerateAll'])->name('schedule.auto_all');
+    
+    // 4. حفظ الجدولة اليدوية (POST)
+    Route::post('/manual/{slot}/save', [ExamScheduleController::class, 'saveManual'])->name('schedule.manual.save');
+    // مسار التوليد التلقائي لمجموعة واحدة (الذي يطلبه الزر)
+Route::get('/auto/{slot}', [ExamScheduleController::class, 'autoGenerate'])->name('schedule.auto');
+
+});
+
+
+
+
+
+
+/// مسارات توزيع المراقبين الشاملة
+Route::prefix('invigilation')->group(function () {
+    // الصفحة الرئيسية (عرض كل التواريخ)
+    Route::get('/all', [InvigilationController::class, 'indexGlobal'])->name('invigilation.global');
+
+    // حفظ التكليفات الشاملة
+    Route::post('/save-all', [InvigilationController::class, 'saveGlobal'])->name('invigilation.save_global');
+});
+
+
+
+
+
+
+
+
+
+
+Route::get('/students', [StudentController::class, 'index'])->name('students.index');
+Route::post('/students/save', [StudentController::class, 'store'])->name('students.store');
+Route::post('/students/update', [StudentController::class, 'update'])->name('students.update');
+Route::post('/students/delete', [StudentController::class, 'destroy'])->name('students.destroy');
+
+
+Route::get('/dashboard/students' , function(){
+    return view('students');
 });
